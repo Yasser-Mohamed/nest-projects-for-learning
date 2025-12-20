@@ -1,12 +1,12 @@
-import { IsInt, IsString, Length } from 'class-validator';
+import { IsInt, IsPositive, IsString, Length } from 'class-validator';
 export class CreatePropertyDto {
-    @IsString({always: true})
-    @Length(2, 10, { message: 'Name must be between 2 and 10 characters' })
-    name: string;
-    @IsString()
-    @Length(1, 10, {groups: ['create']})
-    @Length(2, 15, {groups: ['update']})
-    description: string;
-    @IsInt({always: true})
-    area: number;
+  @IsString()
+  @Length(2, 10, { message: 'name must be between 2 and 10 characters' })
+  name: string;
+  @IsString()
+  description: string;
+
+  @IsInt()
+  @IsPositive()
+  price: number;
 }

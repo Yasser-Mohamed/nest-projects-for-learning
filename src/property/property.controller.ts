@@ -21,6 +21,9 @@ import type { CreatePropertyZodDto } from './dto/createPropertyZod.dto';
 import { HeadersDto } from './dto/headers.dto';
 import { RequestHeader } from './pipes/request-header';
 import { PropertyService } from './property.service';
+import { UpdatePropertyDto } from './dto/updateProperty.dto';
+import { Q } from 'node_modules/@faker-js/faker/dist/airline-DF6RqYmq';
+import { PaginationDto } from './dto/pagination.dto';
 
 
 @Controller('property')
@@ -29,33 +32,31 @@ export class PropertyController {
   constructor(private propertyService: PropertyService) {}
 
   @Get()
-  findAll() {
-    return this.propertyService.findAll();
+  findAll(@Query() PaginationDto: PaginationDto) {
+    return this.propertyService.findAll(PaginationDto);
   }
 
-  @Get(':at/:id')
-  findOne(@Param('id', ParseIntPipe) id, @Query('sort', ParseBoolPipe) sort) {
-    return this.propertyService.findOne();
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id) {
+    return this.propertyService.findOne(id);
   }
 
   @Post()
-  @UsePipes(new ZodValidationPipe(createPropertySchema))
-  createProperty(@Body() body: CreatePropertyZodDto) {
-    return this.propertyService.create();
+  createProperty(@Body() dto: CreatePropertyZodDto) {
+    return this.propertyService.create(dto);
   }
 
   @Patch(':id')
   // @UsePipes(new ValidationPipe({ groups: ['update'] }))
   updateProperty(
     @Param('id', ParseIdPipe) id,
-    @Body() body: CreatePropertyDto,
-    @RequestHeader(HeadersDto) headers: HeadersDto,
+    @Body() body: UpdatePropertyDto,
   ) {
-    return this.propertyService.update();
+    return this.propertyService.update(id, body);
   }
 
   @Delete(':id')
-  deleteProperty(@Param('id') id: string) {
-    return this.propertyService.delete();
+  deleteProperty(@Param('id', ParseIntPipe) id: number) {
+    return this.propertyService.delete(id);
   }
 }
